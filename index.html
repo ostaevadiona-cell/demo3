@@ -673,6 +673,7 @@
 
 <!-- FINAL -->
 <div id="final-screen" class="hidden">
+  <canvas id="matrix-canvas" style="position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.55;"></canvas>
   <div class="final-date" id="final-date"></div>
   <div class="final-sub">// ДАТА РАСКРЫТА //</div>
 
@@ -1204,6 +1205,35 @@ function _showFinal(){
   document.getElementById("phase3-screen").classList.add("hidden");
   const sc=document.getElementById("final-screen");
   document.getElementById("final-date").textContent=_dat.phase2.final_date;
+  // Start matrix rain
+  (function startMatrix(){
+    const canvas=document.getElementById("matrix-canvas");
+    if(!canvas)return;
+    const ctx=canvas.getContext("2d");
+    function resize(){canvas.width=canvas.offsetWidth;canvas.height=canvas.offsetHeight;}
+    resize();
+    window.addEventListener("resize",resize);
+    const chars="アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%@!&*";
+    const fontSize=14;
+    let cols=Math.floor(canvas.width/fontSize);
+    let drops=Array(cols).fill(1);
+    function draw(){
+      ctx.fillStyle="rgba(0,0,0,0.05)";
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      cols=Math.floor(canvas.width/fontSize);
+      while(drops.length<cols)drops.push(Math.random()*canvas.height/fontSize|0);
+      for(let i=0;i<cols;i++){
+        const ch=chars[Math.random()*chars.length|0];
+        const bright=Math.random()>.92;
+        ctx.fillStyle=bright?"#ffffff":Math.random()>.15?"#00cc44":"#004d1a";
+        ctx.font=fontSize+"px monospace";
+        ctx.fillText(ch,i*fontSize,drops[i]*fontSize);
+        if(drops[i]*fontSize>canvas.height&&Math.random()>.975)drops[i]=0;
+        drops[i]++;
+      }
+    }
+    window._matrixTimer=setInterval(draw,40);
+  })();
   sc.classList.remove("hidden");sc.style.opacity="0";sc.style.transition="opacity 1.2s";
   requestAnimationFrame(()=>requestAnimationFrame(()=>{sc.style.opacity="1";}));
 }

@@ -1390,14 +1390,17 @@ window._p3c=_p3check;
   overlay2.addEventListener("click",closeSecret2);
 
   let clickCount=0,clickTimer=null;
-  document.addEventListener("click",function(e){
-    const qm=e.target.closest("#gq-main, #glitch-q");
-    if(!qm)return;
-    clickCount++;
-    clearTimeout(clickTimer);
-    clickTimer=setTimeout(()=>{clickCount=0;},600);
-    if(clickCount>=3){clickCount=0;clearTimeout(clickTimer);openSecret2();}
-  });
+  const qmEl=document.getElementById("gq-main");
+  if(qmEl){
+    qmEl.style.cursor="pointer";
+    qmEl.addEventListener("click",function(e){
+      e.stopPropagation();
+      clickCount++;
+      clearTimeout(clickTimer);
+      clickTimer=setTimeout(()=>{clickCount=0;},800);
+      if(clickCount>=3){clickCount=0;clearTimeout(clickTimer);openSecret2();}
+    });
+  }
 })();
 </script>
 </body>

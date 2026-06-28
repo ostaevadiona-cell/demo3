@@ -1337,6 +1337,18 @@ window._p3c=_p3check;
 }
 </style>
 
+<!-- SECRET OVERLAY 2 — фото по тройному клику на ? -->
+<div id="secret-overlay-2" style="
+  display:none;position:fixed;inset:0;z-index:999998;
+  align-items:center;justify-content:center;cursor:pointer;
+">
+  <div style="position:absolute;inset:0;overflow:hidden;">
+    <img src="IMG_0684.JPG" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.7) saturate(0.85);">
+  </div>
+  <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.3),rgba(0,0,0,.05),rgba(0,0,0,.4));"></div>
+  <div style="position:absolute;bottom:28px;font-family:monospace;font-size:11px;letter-spacing:.3em;color:rgba(255,255,255,.25);z-index:2;">// нажми чтобы закрыть //</div>
+</div>
+
 <script>
 (function(){
   const overlay=document.getElementById("secret-overlay");
@@ -1362,6 +1374,30 @@ window._p3c=_p3check;
     openSecret();
   });
   overlay.addEventListener("click",closeSecret);
+
+  // Тройной клик на вопросительный знак
+  const overlay2=document.getElementById("secret-overlay-2");
+  function openSecret2(){
+    overlay2.style.display="flex";
+    overlay2.style.opacity="0";
+    overlay2.style.transition="opacity .6s";
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{overlay2.style.opacity="1";}));
+  }
+  function closeSecret2(){
+    overlay2.style.opacity="0";
+    setTimeout(()=>{overlay2.style.display="none";},600);
+  }
+  overlay2.addEventListener("click",closeSecret2);
+
+  let clickCount=0,clickTimer=null;
+  document.addEventListener("click",function(e){
+    const qm=e.target.closest("#gq-main, #glitch-q");
+    if(!qm)return;
+    clickCount++;
+    clearTimeout(clickTimer);
+    clickTimer=setTimeout(()=>{clickCount=0;},600);
+    if(clickCount>=3){clickCount=0;clearTimeout(clickTimer);openSecret2();}
+  });
 })();
 </script>
 </body>
